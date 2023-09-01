@@ -1,0 +1,39 @@
+name: Release
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        mod-loader: [ Forge ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Build ${{ matrix.mod-loader }}
+        uses: gradle/gradle-build-action@v2
+        with:
+          gradle-version: wrapper
+          arguments: build
+
+      - name: Publish ${{ matrix.mod-loader }}
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          modrinth-id: bI9lnAFH
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          curseforge-id: 908384
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+
+          changelog-file: CHANGELOG.md
+          loaders: |
+            forge
+            neoforge
