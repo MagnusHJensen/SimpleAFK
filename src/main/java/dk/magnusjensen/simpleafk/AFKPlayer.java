@@ -13,9 +13,8 @@ import dk.magnusjensen.simpleafk.config.ServerConfig;
 import dk.magnusjensen.simpleafk.utils.Permissions;
 import dk.magnusjensen.simpleafk.utils.Utilities;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 public class AFKPlayer {
     private final ServerPlayer player;
@@ -48,7 +47,7 @@ public class AFKPlayer {
             } else {
                 move(player.blockPosition());
             }
-        } else if (player.level().getGameTime() % 20 == 0) {
+        } else if (player.getLevel().getGameTime() % 20 == 0) {
             long timestampInSeconds = System.currentTimeMillis() / 1000;
             // Check if the player is not marked as AFK, and if the player has not moved for the amount of seconds specified in the config.
             if (!isAfk && timestampInSeconds - timesstampSinceLastMove >= ServerConfig.secondsBeforeAfk) {
@@ -58,7 +57,7 @@ public class AFKPlayer {
                     isAfk &&
                     timestampInSeconds - timestampSinceAfk >= ServerConfig.secondsBeforeKick
             ) {
-                player.connection.disconnect(Component.literal(ServerConfig.afkKickMessage));
+                player.connection.disconnect(new TextComponent(ServerConfig.afkKickMessage));
             }
         }
 
@@ -78,7 +77,7 @@ public class AFKPlayer {
         move(player.blockPosition());
         this.player.refreshDisplayName();
         this.player.refreshTabListName();
-        Utilities.broadcastSystemMessage(Utilities.formatMessageWithPlayerName(ServerConfig.isNowAfkMessage, player.getDisplayName().getString()));
+        dk.magnusjensen.simpleafk.utils.Utilities.broadcastSystemMessage(Utilities.formatMessageWithPlayerName(ServerConfig.isNowAfkMessage, player.getDisplayName().getString()));
     }
 
     private void removeAfkStatus() {

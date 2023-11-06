@@ -9,26 +9,27 @@
 
 package dk.magnusjensen.simpleafk.utils;
 
-
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import net.minecraftforge.server.permission.PermissionAPI;
 import net.minecraftforge.server.permission.nodes.PermissionNode;
 
+import static net.minecraft.Util.NIL_UUID;
+
 public class Utilities {
     public static Component formatMessageWithPlayerName(String message, String playerName) {
-        return Component.literal(message.replace("$player", playerName));
+        return new TextComponent(message.replace("$player", playerName));
     }
 
     public static Component formatMessageWithComponent(String message, String replace, Component component) {
-        return Component.literal(message.replace("$" + replace, component.getString()));
+        return new TextComponent(message.replace("$" + replace, component.getString()));
     }
 
     public static void broadcastSystemMessage(Component message) {
-        ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastSystemMessage(message, false);
+        ServerLifecycleHooks.getCurrentServer().getPlayerList().broadcastMessage(message, ChatType.SYSTEM, NIL_UUID);
     }
 
     public static boolean hasPermission(ServerPlayer player, PermissionNode<Boolean> node) {

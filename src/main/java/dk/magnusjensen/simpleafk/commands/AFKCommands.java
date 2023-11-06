@@ -18,12 +18,12 @@ import dk.magnusjensen.simpleafk.utils.Utilities;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ChatType;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.server.permission.PermissionAPI;
 import net.minecraftforge.server.permission.nodes.PermissionNode;
 
-import static dk.magnusjensen.simpleafk.utils.Utilities.hasPermission;
+import static net.minecraft.Util.NIL_UUID;
 
 public class AFKCommands {
     public static LiteralArgumentBuilder<CommandSourceStack> register() {
@@ -38,7 +38,7 @@ public class AFKCommands {
 
             )
             .executes(ctx -> toggleAfkStatus(ctx.getSource().getPlayerOrException())
-        );
+            );
     }
 
     private static int toggleAfkStatus(ServerPlayer self) {
@@ -49,7 +49,7 @@ public class AFKCommands {
     private static int toggleAfkStatus(ServerPlayer executor, ServerPlayer target) {
         AFKPlayer player = AFKManager.getInstance().getPlayer(target.getUUID());
         player.toggleAfkStatus();
-        executor.sendSystemMessage(Component.literal("Toggled AFK status for " + target.getScoreboardName()), false);
+        executor.sendMessage(new TextComponent("Toggled AFK status for " + target.getScoreboardName()), ChatType.SYSTEM, NIL_UUID);
         return 1;
     }
 

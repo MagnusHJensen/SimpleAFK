@@ -18,11 +18,11 @@ import net.minecraftforge.server.permission.events.PermissionGatherEvent;
 import net.minecraftforge.server.permission.nodes.PermissionNode;
 import net.minecraftforge.server.permission.nodes.PermissionTypes;
 
-@Mod.EventBusSubscriber(modid = SimpleAFK.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@Mod.EventBusSubscriber(modid = SimpleAFK.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class Permissions {
-    public static final PermissionNode<Boolean> TOGGLE = new PermissionNode<>(SimpleAFK.MODID, "toggle", PermissionTypes.BOOLEAN, (player, playerUUID, context) -> true);
-    public static final PermissionNode<Boolean> TOGGLE_OTHER = new PermissionNode<>(SimpleAFK.MODID, "toggle.target", PermissionTypes.BOOLEAN, (player, playerUUID, context) -> isOp(player));
-    public static final PermissionNode<Boolean> BYPASS_AFK = new PermissionNode<>(SimpleAFK.MODID, "bypass", PermissionTypes.BOOLEAN, (player, playerUUID, context) -> isOp(player));
+    public static final PermissionNode<Boolean> TOGGLE = new PermissionNode<>(SimpleAFK.MOD_ID, "toggle", PermissionTypes.BOOLEAN, (player, playerUUID, context) -> true);
+    public static final PermissionNode<Boolean> TOGGLE_OTHER = new PermissionNode<>(SimpleAFK.MOD_ID, "toggle.target", PermissionTypes.BOOLEAN, (player, playerUUID, context) -> isOp(player));
+    public static final PermissionNode<Boolean> BYPASS_AFK = new PermissionNode<>(SimpleAFK.MOD_ID, "bypass", PermissionTypes.BOOLEAN, (player, playerUUID, context) -> isOp(player));
 
 
     private static boolean isOp(ServerPlayer player) {
