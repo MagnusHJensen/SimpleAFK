@@ -6,9 +6,6 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        mod-loader: [ Forge ]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -18,13 +15,13 @@ jobs:
           java-version: 17
           distribution: temurin
 
-      - name: Build ${{ matrix.mod-loader }}
+      - name: Build Forge
         uses: gradle/gradle-build-action@v2
         with:
           gradle-version: wrapper
           arguments: build
 
-      - name: Publish ${{ matrix.mod-loader }}
+      - name: Publish Forge
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           modrinth-id: bI9lnAFH
@@ -36,4 +33,3 @@ jobs:
           changelog-file: CHANGELOG.md
           loaders: |
             forge
-            neoforge

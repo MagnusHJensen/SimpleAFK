@@ -9,34 +9,38 @@
 
 package dk.magnusjensen.simpleafk;
 
-import com.mojang.logging.LogUtils;
-import dk.magnusjensen.simpleafk.commands.AFKCommands;
 import dk.magnusjensen.simpleafk.config.ServerConfig;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModProcessEvent;
+import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import static dk.magnusjensen.simpleafk.utils.Utilities.formatMessageWithComponent;
+import java.util.stream.Collectors;
 
-@Mod(SimpleAFK.MODID)
-@Mod.EventBusSubscriber(modid = SimpleAFK.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@Mod(SimpleAFK.MOD_ID)
+@Mod.EventBusSubscriber(modid = SimpleAFK.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class SimpleAFK
 {
-    public static final String MODID = "simpleafk";
-    private static final Logger LOGGER = LogUtils.getLogger();
-
+    // Directly reference a slf4j logger
+    private static final Logger LOGGER = LogManager.getLogger();
+    public static final String MOD_ID = "simpleafk";
 
     public SimpleAFK() {
         // Register ourselves for server and other game events we are interested in
@@ -49,7 +53,7 @@ public class SimpleAFK
 
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-        if (event.player.level().isClientSide()) return;
+        if (event.player.getLevel().isClientSide()) return;
         AFKManager.getInstance().getPlayer(event.player.getUUID()).tick((ServerPlayer) event.player);
     }
 
@@ -86,6 +90,4 @@ public class SimpleAFK
     public static void onRegisterCommands(RegisterCommandsEvent event) {
         event.getDispatcher().register(AFKCommands.register());
     }
-
-
 }

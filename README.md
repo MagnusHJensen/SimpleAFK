@@ -15,8 +15,8 @@ It provides the ability to configure:
 <summary><b>Permission Nodes</b></summary>
 
 Simple AFK introduces some standard permission nodes if you are using a permission system.
-- `simpleafk.toggle` - Allows the player to toggle their AFK status
-- `simpleafk.toggle.target` - Allows the player to toggle another player's AFK status
-- `simpleafk.bypass` - Allows the player to bypass AFK status (Meaning they won't get marked as AFK and won't get kicked)
+- `simpleafk.toggle` - Allows the player to toggle their AFK status (Default: Everyone has this permission)
+- `simpleafk.toggle.target` - Allows the player to toggle another player's AFK status (Default: Only OP's have this permission)
+- `simpleafk.bypass` - Allows the player to bypass AFK status (Meaning they won't get marked as AFK and won't get kicked) (Default: Only OP's have this permission)
 
 </details>
