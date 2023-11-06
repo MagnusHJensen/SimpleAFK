@@ -9,11 +9,16 @@
 
 package dk.magnusjensen.simpleafk;
 
+import dk.magnusjensen.simpleafk.commands.AFKCommands;
 import dk.magnusjensen.simpleafk.config.ServerConfig;
+import dk.magnusjensen.simpleafk.utils.Utilities;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
@@ -81,8 +86,8 @@ public class SimpleAFK
         AFKManager manager = AFKManager.getInstance();
         AFKPlayer player = manager.getPlayer(event.getEntity().getUUID());
         if (player != null && player.isAfk()) {
-            Component name = event.getDisplayName() != null ? event.getDisplayName() : Component.literal(event.getEntity().getScoreboardName());
-            event.setDisplayName(formatMessageWithComponent(ServerConfig.playerNameFormat, "player", name));
+            Component name = event.getDisplayName() != null ? event.getDisplayName() : new TextComponent(event.getEntity().getScoreboardName());
+            event.setDisplayName(Utilities.formatMessageWithComponent(ServerConfig.playerNameFormat, "player", name));
         }
     }
 
