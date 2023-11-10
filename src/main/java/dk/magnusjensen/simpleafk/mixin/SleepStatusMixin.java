@@ -10,7 +10,6 @@
 package dk.magnusjensen.simpleafk.mixin;
 
 import dk.magnusjensen.simpleafk.AFKManager;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.SleepStatus;
 import net.minecraft.util.Mth;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,8 +18,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.List;
-
 @Mixin(SleepStatus.class)
 public class SleepStatusMixin {
 
@@ -28,7 +25,7 @@ public class SleepStatusMixin {
 
     @Inject(method = "sleepersNeeded", at = @At("HEAD"), cancellable = true)
     private void onSleepersNeeded(int requiredSleepPercentage, CallbackInfoReturnable<Integer> cir) {
-        int actualActivePlayers = this.activePlayers - AFKManager.getInstance().getAFKCount();
+        int actualActivePlayers = this.activePlayers - AFKManager.getInstance().getSleepBypassCount();
         cir.setReturnValue(Math.max(1, Mth.ceil((float)(actualActivePlayers * requiredSleepPercentage) / 100.0F)));
     }
 }

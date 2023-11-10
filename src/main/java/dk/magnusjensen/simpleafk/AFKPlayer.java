@@ -118,6 +118,10 @@ public class AFKPlayer {
         return isAfk;
     }
 
+    public boolean bypassSleep() {
+        return Utilities.hasPermission(player, Permissions.BYPASS_SLEEP) || isAfk();
+    }
+
     public BlockPos getLastPosition() {
         return lastPosition;
     }

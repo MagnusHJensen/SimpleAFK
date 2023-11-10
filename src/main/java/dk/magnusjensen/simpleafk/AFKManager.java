@@ -9,10 +9,7 @@
 
 package dk.magnusjensen.simpleafk;
 
-import dk.magnusjensen.simpleafk.utils.Permissions;
-import dk.magnusjensen.simpleafk.utils.Utilities;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.server.permission.PermissionAPI;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,13 +38,11 @@ public class AFKManager {
     }
 
     public int getAFKCount() {
-        int count = 0;
-        for (AFKPlayer player : players.values()) {
-            if (player.isAfk() || Utilities.hasPermission(player.getPlayer(), Permissions.BYPASS_SLEEP)) {
-                count++;
-            }
-        }
-        return count;
+        return (int) players.values().stream().filter(AFKPlayer::isAfk).count();
+    }
+
+    public int getSleepBypassCount() {
+        return (int) players.values().stream().filter(AFKPlayer::bypassSleep).count();
     }
 
 
