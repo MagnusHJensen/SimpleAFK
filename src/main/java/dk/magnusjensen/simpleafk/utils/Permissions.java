@@ -23,6 +23,7 @@ public class Permissions {
     public static final PermissionNode<Boolean> TOGGLE = new PermissionNode<>(SimpleAFK.MOD_ID, "toggle", PermissionTypes.BOOLEAN, (player, playerUUID, context) -> true);
     public static final PermissionNode<Boolean> TOGGLE_OTHER = new PermissionNode<>(SimpleAFK.MOD_ID, "toggle.target", PermissionTypes.BOOLEAN, (player, playerUUID, context) -> isOp(player));
     public static final PermissionNode<Boolean> BYPASS_AFK = new PermissionNode<>(SimpleAFK.MOD_ID, "bypass", PermissionTypes.BOOLEAN, (player, playerUUID, context) -> isOp(player));
+    public static final PermissionNode<Boolean> BYPASS_SLEEP = new PermissionNode<>(SimpleAFK.MOD_ID, "bypass_sleep", PermissionTypes.BOOLEAN, (player, playerUUID, context) -> isOp(player));
 
 
     private static boolean isOp(ServerPlayer player) {
@@ -31,6 +32,6 @@ public class Permissions {
 
     @SubscribeEvent
     public static void onPermissionGather(PermissionGatherEvent.Nodes event) {
-        event.addNodes(TOGGLE, TOGGLE_OTHER, BYPASS_AFK);
+        event.addNodes(TOGGLE, TOGGLE_OTHER, BYPASS_AFK, BYPASS_SLEEP);
     }
 }
