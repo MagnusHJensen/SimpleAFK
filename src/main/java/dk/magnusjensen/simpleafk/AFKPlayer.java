@@ -40,7 +40,7 @@ public class AFKPlayer {
      * @param player
      */
     public void tick(ServerPlayer player) {
-        if (Utilities.hasPermission(player, Permissions.BYPASS_AFK)) return; // SKip if the player has the bypass permission.
+        if (Utilities.hasPermission(player, Permissions.BYPASS_AFK) || player.isSleeping()) return; // SKip if the player has the bypass permission.
 
         if (hasPlayerMoved(player.blockPosition())) {
             if (isAfk) {
@@ -92,7 +92,7 @@ public class AFKPlayer {
     }
 
     private boolean hasPlayerMoved(BlockPos currentPos) {
-        return !currentPos.equals(lastPosition);
+        return !currentPos.equals(getLastPosition());
     }
 
     private void move(BlockPos pos) {
@@ -117,6 +117,10 @@ public class AFKPlayer {
 
     public boolean isAfk() {
         return isAfk;
+    }
+
+    public boolean bypassesSleep() {
+        return isAfk() || Utilities.hasPermission(player, Permissions.BYPASS_SLEEP);
     }
 
     public BlockPos getLastPosition() {

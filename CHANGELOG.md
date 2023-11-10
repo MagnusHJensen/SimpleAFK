@@ -1,5 +1,4 @@
-## 1.20.1 - 1.0.0
-- Introduces timed AFK marking
-- Ability to kick player after x seconds of being AFK
-- Ability to format AFK message and kick message to your liking
-- Lists the player name as [AFK] (with ability to customize) in tab list
+## 1.20.1 - 1.1.0
+- Skip AFK players when vanilla sleeping percentage is checked.
+- Add `simpleafk.bypass_sleep` permission node to allow players to bypass the sleep percentage check without being AFK.
+- Overwrote vanilla's `setIdleTimeout` command, to prevent it from kicking for idle.

@@ -37,6 +37,13 @@ public class AFKManager {
         players.remove(player);
     }
 
+    public int getAFKCount() {
+        return (int) players.values().stream().filter(AFKPlayer::isAfk).count();
+    }
+
+    public int getSleepBypassCount() {
+        return (int) players.values().stream().filter(AFKPlayer::bypassesSleep).count();
+    }
 
     public static AFKManager getInstance() {
         if (INSTANCE == null) {
