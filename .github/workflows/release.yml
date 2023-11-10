@@ -31,5 +31,7 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           changelog-file: CHANGELOG.md
+          game-versions: |
+            [1.18,1.19)
           loaders: |
             forge
