@@ -32,6 +32,6 @@ jobs:
 
           changelog-file: CHANGELOG.md
           game-versions: |
-            [1.18,1.19)
+            [1.19,1.19.3)
           loaders: |
             forge

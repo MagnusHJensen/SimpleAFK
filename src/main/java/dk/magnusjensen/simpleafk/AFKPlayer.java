@@ -13,7 +13,7 @@ import dk.magnusjensen.simpleafk.config.ServerConfig;
 import dk.magnusjensen.simpleafk.utils.Permissions;
 import dk.magnusjensen.simpleafk.utils.Utilities;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 public class AFKPlayer {
@@ -57,7 +57,7 @@ public class AFKPlayer {
                     isAfk &&
                     timestampInSeconds - timestampSinceAfk >= ServerConfig.secondsBeforeKick
             ) {
-                player.connection.disconnect(new TextComponent(ServerConfig.afkKickMessage));
+                player.connection.disconnect(Component.literal(ServerConfig.afkKickMessage));
             }
         }
 
