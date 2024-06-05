@@ -2,7 +2,7 @@
   "required": true,
   "package": "dk.magnusjensen.simpleafk.mixin",
   "compatibilityLevel": "JAVA_17",
-  "refmap": "${refmap_target}refmap.json",
+  "refmap": "mixins.simpleafk.refmap.json",
   "server": [
     "SleepStatusMixin",
     "MinecraftServerMixin"
