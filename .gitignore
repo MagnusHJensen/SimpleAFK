@@ -21,3 +21,5 @@ build
 eclipse
 run
 run-data
+
+.DS_Store
