@@ -20,7 +20,7 @@ public class AFKPlayer {
     private final ServerPlayer player;
     private boolean isAfk;
     private long timestampSinceAfk;
-    private long timesstampSinceLastMove;
+    private long timestampSinceLastMove;
     private BlockPos lastPosition;
 
 
@@ -28,7 +28,7 @@ public class AFKPlayer {
         this.player = player;
         this.isAfk = false;
         this.timestampSinceAfk = System.currentTimeMillis() / 1000;
-        this.timesstampSinceLastMove = System.currentTimeMillis() / 1000;
+        this.timestampSinceLastMove = System.currentTimeMillis() / 1000;
         this.lastPosition = null;
     }
 
@@ -50,7 +50,7 @@ public class AFKPlayer {
         } else if (player.getLevel().getGameTime() % 20 == 0) {
             long timestampInSeconds = System.currentTimeMillis() / 1000;
             // Check if the player is not marked as AFK, and if the player has not moved for the amount of seconds specified in the config.
-            if (!isAfk && timestampInSeconds - timesstampSinceLastMove >= ServerConfig.secondsBeforeAfk) {
+            if (!isAfk && timestampInSeconds - timestampSinceLastMove >= ServerConfig.secondsBeforeAfk) {
                 setAfkStatus();
             } else if (
                 ServerConfig.secondsBeforeKick > 0 &&
@@ -77,17 +77,27 @@ public class AFKPlayer {
         move(player.blockPosition());
         this.player.refreshDisplayName();
         this.player.refreshTabListName();
-        dk.magnusjensen.simpleafk.utils.Utilities.broadcastSystemMessage(Utilities.formatMessageWithPlayerName(ServerConfig.isNowAfkMessage, player.getDisplayName().getString()));
+
+        if (ServerConfig.isNowAfkMessageEnabled) {
+            Utilities.broadcastSystemMessage(Utilities.formatMessageWithPlayerName(ServerConfig.isNowAfkMessage, player.getDisplayName().getString()));
+        } else {
+            player.sendMessage(Utilities.formatMessageWithPlayerName(ServerConfig.isNowAfkMessage, player.getDisplayName().getString()), player.getUUID());
+        }
     }
 
     private void removeAfkStatus() {
         this.isAfk = false;
         this.timestampSinceAfk = System.currentTimeMillis() / 1000;
-        this.timesstampSinceLastMove = System.currentTimeMillis() / 1000;
+        this.timestampSinceLastMove = System.currentTimeMillis() / 1000;
         move(player.blockPosition());
         this.player.refreshDisplayName();
         this.player.refreshTabListName();
-        Utilities.broadcastSystemMessage(Utilities.formatMessageWithPlayerName(ServerConfig.isNoLongerAfkMessage, player.getDisplayName().getString()));
+
+        if (ServerConfig.isNoLongerAfkMessageEnabled) {
+            Utilities.broadcastSystemMessage(Utilities.formatMessageWithPlayerName(ServerConfig.isNoLongerAfkMessage, player.getDisplayName().getString()));
+        } else {
+            player.sendMessage(Utilities.formatMessageWithPlayerName(ServerConfig.isNoLongerAfkMessage, player.getDisplayName().getString()), player.getUUID());
+        }
     }
 
     private boolean hasPlayerMoved(BlockPos currentPos) {
@@ -96,7 +106,7 @@ public class AFKPlayer {
 
     private void move(BlockPos pos) {
         this.lastPosition = pos;
-        this.timesstampSinceLastMove = System.currentTimeMillis() / 1000;
+        this.timestampSinceLastMove = System.currentTimeMillis() / 1000;
     }
 
     public ServerPlayer getPlayer() {
@@ -111,7 +121,7 @@ public class AFKPlayer {
     }
 
     public long getSecondsSinceLastMove() {
-        return (System.currentTimeMillis() / 1000) - timesstampSinceLastMove;
+        return (System.currentTimeMillis() / 1000) - timestampSinceLastMove;
     }
 
     public boolean isAfk() {
