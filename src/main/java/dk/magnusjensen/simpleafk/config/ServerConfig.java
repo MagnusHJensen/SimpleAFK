@@ -29,9 +29,17 @@ public class ServerConfig
     private static final ForgeConfigSpec.ConfigValue<String> IS_NOW_AFK_MESSAGE = BUILDER
         .comment("How the message should be displayed when a player is marked as AFK", "Can be edited with the regular minecraft chat codes which can be found here https://minecraft.fandom.com/wiki/Formatting_codes#Color_codes", "$player will be replaced with the actual player name", "$player is required to appear in the text")
         .define("isNowAfkMessage", "§e§o$player is now AFK", (obj) -> obj instanceof String && obj.toString().contains("$player"));
+
+    private static final ForgeConfigSpec.ConfigValue<Boolean> IS_NOW_AFK_MESSAGE_ENABLED = BUILDER
+        .comment("Whether or not the player is now AFK message should be sent to all players.", "Note: It will always be sent to the player that has gone AFK.")
+        .define("isNowAfkMessageEnabled", true);
     private static final ForgeConfigSpec.ConfigValue<String> IS_NO_LONGER_AFK_MESSAGE = BUILDER
         .comment("How the message should be displayed when a player is no longer marked as AFK", "Can be edited with the regular minecraft chat codes which can be found here https://minecraft.fandom.com/wiki/Formatting_codes#Color_codes", "$player will be replaced with the actual player name", "$player is required to appear in the text")
         .define("isNoLongerAfkMessage", "§e§o$player is no longer AFK", (obj) -> obj instanceof String && obj.toString().contains("$player"));
+
+    private static final ForgeConfigSpec.ConfigValue<Boolean> IS_NO_LONGER_AFK_MESSAGE_ENABLED = BUILDER
+        .comment("Whether or not the player is no longer AFK message should be sent to all players.", "Note: It will always be sent to the player that is no longer AFK.")
+        .define("isNoLongerAfkMessageEnabled", true);
     private static final ForgeConfigSpec.ConfigValue<String> PLAYER_NAME_FORMAT = BUILDER
         .comment("How the player name should appear when a player is AFK (includes tab list and nametag above player)", "Can be edited with the regular minecraft chat codes which can be found here https://minecraft.fandom.com/wiki/Formatting_codes#Color_codes", "$player will be replaced with the actual player name", "$player is required to appear in the text")
         .define("playerNameFormat", "§7[AFK] §r$player", (obj) -> obj instanceof String && obj.toString().contains("$player"));
@@ -43,7 +51,9 @@ public class ServerConfig
     public static int secondsBeforeAfk;
     public static int secondsBeforeKick;
     public static String isNowAfkMessage;
+    public static Boolean isNowAfkMessageEnabled;
     public static String isNoLongerAfkMessage;
+    public static Boolean isNoLongerAfkMessageEnabled;
     public static String playerNameFormat;
     public static String afkKickMessage;
 
@@ -54,7 +64,9 @@ public class ServerConfig
         secondsBeforeAfk = SECONDS_BEFORE_AFK.get();
         secondsBeforeKick = SECONDS_BEFORE_KICK.get();
         isNowAfkMessage = IS_NOW_AFK_MESSAGE.get();
+        isNowAfkMessageEnabled = IS_NOW_AFK_MESSAGE_ENABLED.get();
         isNoLongerAfkMessage = IS_NO_LONGER_AFK_MESSAGE.get();
+        isNoLongerAfkMessageEnabled = IS_NO_LONGER_AFK_MESSAGE_ENABLED.get();
         playerNameFormat = PLAYER_NAME_FORMAT.get();
         afkKickMessage = AFK_KICK_MESSAGE.get();
     }
