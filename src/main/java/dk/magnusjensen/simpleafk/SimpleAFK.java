@@ -13,7 +13,6 @@ import com.mojang.logging.LogUtils;
 import dk.magnusjensen.simpleafk.commands.AFKCommands;
 import dk.magnusjensen.simpleafk.config.ServerConfig;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;

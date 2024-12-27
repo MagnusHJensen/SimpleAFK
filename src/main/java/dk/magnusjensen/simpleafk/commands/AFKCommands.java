@@ -11,6 +11,7 @@ package dk.magnusjensen.simpleafk.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import dk.magnusjensen.simpleafk.AFKData;
 import dk.magnusjensen.simpleafk.AFKManager;
 import dk.magnusjensen.simpleafk.AFKPlayer;
 import dk.magnusjensen.simpleafk.utils.Permissions;
@@ -20,10 +21,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.server.permission.PermissionAPI;
 import net.minecraftforge.server.permission.nodes.PermissionNode;
-
-import static dk.magnusjensen.simpleafk.utils.Utilities.hasPermission;
 
 public class AFKCommands {
     public static LiteralArgumentBuilder<CommandSourceStack> register() {
@@ -35,7 +33,27 @@ public class AFKCommands {
                     .executes(ctx -> toggleAfkStatus(ctx.getSource().getPlayerOrException(), EntityArgument.getPlayer(ctx, "player")))
                 )
                 .executes(ctx -> toggleAfkStatus(ctx.getSource().getPlayerOrException()))
-
+            )
+            .then(Commands.literal("bypass-list")
+                .then(Commands.literal("add")
+                    .then(Commands.argument("player", EntityArgument.player())
+                        .executes(ctx -> {
+                            AFKData.get(ctx.getSource().getServer()).addExemptPlayer(EntityArgument.getPlayer(ctx, "player").getUUID());
+                            ctx.getSource().sendSuccess(() -> {
+                                try {
+                                    return Component.literal("Added " + EntityArgument.getPlayer(ctx, "player").getScoreboardName() + " to the AFK Bypass List");
+                                } catch (CommandSyntaxException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }, false);
+                            return 1;
+                        })
+                    )
+                )
+                .executes(ctx -> {
+                    ctx.getSource().sendSuccess(() -> Component.literal("AFK Bypass List: " + AFKData.get(ctx.getSource().getServer()).getExemptPlayers().toString()), false);
+                    return 1;
+                })
             )
             .executes(ctx -> toggleAfkStatus(ctx.getSource().getPlayerOrException())
         );
