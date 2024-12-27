@@ -34,7 +34,7 @@ import static dk.magnusjensen.simpleafk.utils.Utilities.formatMessageWithCompone
 public class SimpleAFK
 {
     public static final String MODID = "simpleafk";
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
 
 
     public SimpleAFK() {

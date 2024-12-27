@@ -21,7 +21,12 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.PlayerList;
 import net.minecraftforge.server.permission.nodes.PermissionNode;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class AFKCommands {
     public static LiteralArgumentBuilder<CommandSourceStack> register() {
@@ -37,21 +42,28 @@ public class AFKCommands {
             .then(Commands.literal("bypass-list")
                 .then(Commands.literal("add")
                     .then(Commands.argument("player", EntityArgument.player())
-                        .executes(ctx -> {
-                            AFKData.get(ctx.getSource().getServer()).addExemptPlayer(EntityArgument.getPlayer(ctx, "player").getUUID());
-                            ctx.getSource().sendSuccess(() -> {
-                                try {
-                                    return Component.literal("Added " + EntityArgument.getPlayer(ctx, "player").getScoreboardName() + " to the AFK Bypass List");
-                                } catch (CommandSyntaxException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }, false);
-                            return 1;
-                        })
+                        .executes(ctx -> addExemptPlayer(ctx.getSource(), EntityArgument.getPlayer(ctx, "player")))
+                    )
+                )
+                .then(Commands.literal("remove")
+                    .then(Commands.argument("player", EntityArgument.player())
+                        .executes(ctx -> removeExemptPlayer(ctx.getSource(), EntityArgument.getPlayer(ctx, "player")))
                     )
                 )
                 .executes(ctx -> {
-                    ctx.getSource().sendSuccess(() -> Component.literal("AFK Bypass List: " + AFKData.get(ctx.getSource().getServer()).getExemptPlayers().toString()), false);
+                    PlayerList list = ctx.getSource().getServer().getPlayerList();
+                    List<UUID> uuids = AFKData.get(ctx.getSource().getServer()).getExemptPlayers();
+
+                    List<String> players = new ArrayList<>();
+                    for (UUID uuid : uuids) {
+                        ServerPlayer player = list.getPlayer(uuid);
+                        if (player == null) {
+                            continue;
+                        }
+                        players.add(player.getName().getString());
+                    }
+
+                    ctx.getSource().sendSuccess(() -> Component.literal("AFK Bypass List: " + players), false);
                     return 1;
                 })
             )
@@ -69,6 +81,25 @@ public class AFKCommands {
         player.toggleAfkStatus();
         executor.sendSystemMessage(Component.literal("Toggled AFK status for " + target.getScoreboardName()), false);
         return 1;
+    }
+
+    private static int addExemptPlayer(CommandSourceStack ctx, ServerPlayer player) {
+        AFKData.get(ctx.getServer()).addExemptPlayer(player.getUUID());
+        ctx.sendSuccess(() -> Component.literal("Added " + player.getScoreboardName() + " to the AFK Bypass List"), false);
+        return 1;
+    }
+
+    private static int removeExemptPlayer(CommandSourceStack ctx, ServerPlayer player) {
+        AFKData data = AFKData.get(ctx.getServer());
+
+        if (data.isPlayerExempt(player.getUUID())) {
+            data.removeExemptPlayer(player.getUUID());
+            ctx.sendSuccess(() -> Component.literal("Removed " + player.getScoreboardName() + " from the AFK Bypass List"), false);
+            return 1;
+        }
+
+        ctx.sendSystemMessage(Component.literal(player.getScoreboardName() + " is not on the AFK Bypass List"));
+        return 0;
     }
 
     public static boolean hasPermission(CommandSourceStack ctx, PermissionNode<Boolean> node) {
