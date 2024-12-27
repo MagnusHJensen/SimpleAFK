@@ -129,7 +129,7 @@ public class AFKPlayer {
     }
 
     public boolean bypassesSleep() {
-        return isAfk() || Utilities.hasPermission(player, Permissions.BYPASS_SLEEP);
+        return isAfk() || Utilities.hasPermission(player, Permissions.BYPASS_SLEEP) || AFKData.get(player.server).isPlayerExempt(player.getUUID());
     }
 
     public BlockPos getLastPosition() {

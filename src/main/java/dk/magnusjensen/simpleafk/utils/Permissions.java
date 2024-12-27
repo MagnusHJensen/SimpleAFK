@@ -9,6 +9,7 @@
 
 package dk.magnusjensen.simpleafk.utils;
 
+import dk.magnusjensen.simpleafk.AFKData;
 import dk.magnusjensen.simpleafk.SimpleAFK;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -22,12 +23,16 @@ import net.minecraftforge.server.permission.nodes.PermissionTypes;
 public class Permissions {
     public static final PermissionNode<Boolean> TOGGLE = new PermissionNode<>(SimpleAFK.MODID, "toggle", PermissionTypes.BOOLEAN, (player, playerUUID, context) -> true);
     public static final PermissionNode<Boolean> TOGGLE_OTHER = new PermissionNode<>(SimpleAFK.MODID, "toggle.target", PermissionTypes.BOOLEAN, (player, playerUUID, context) -> isOp(player));
-    public static final PermissionNode<Boolean> BYPASS_AFK = new PermissionNode<>(SimpleAFK.MODID, "bypass", PermissionTypes.BOOLEAN, (player, playerUUID, context) -> isOp(player));
+    public static final PermissionNode<Boolean> BYPASS_AFK = new PermissionNode<>(SimpleAFK.MODID, "bypass", PermissionTypes.BOOLEAN, (player, playerUUID, context) -> isOp(player) || isOnBypassList(player));
     public static final PermissionNode<Boolean> BYPASS_SLEEP = new PermissionNode<>(SimpleAFK.MODID, "bypass_sleep", PermissionTypes.BOOLEAN, (player, playerUUID, context) -> isOp(player));
 
 
     private static boolean isOp(ServerPlayer player) {
         return ServerLifecycleHooks.getCurrentServer().getPlayerList().isOp(player.getGameProfile());
+    }
+
+    private static boolean isOnBypassList(ServerPlayer player) {
+        return AFKData.get(player.server).isPlayerExempt(player.getUUID());
     }
 
     @SubscribeEvent

@@ -46,6 +46,11 @@ public class ServerConfig
     private static final ForgeConfigSpec.ConfigValue<String> AFK_KICK_MESSAGE = BUILDER
         .comment("The message that will be sent to the player after being kicked for being AFK too long.", "Can be edited with the regular minecraft chat codes which can be found here https://minecraft.fandom.com/wiki/Formatting_codes#Color_codes")
         .define("afkKickMessage", "§1You have been kicked for being AFK too long.", (obj) -> obj instanceof String);
+
+    private static final ForgeConfigSpec.ConfigValue<Boolean> INCLUDE_EXEMPT_PLAYERS_IN_SLEEP_VOTE = BUILDER
+        .comment("Whether exempt players should be included in the sleep vote.")
+        .define("includeExemptPlayersInSleepVote", false);
+
     public static final ForgeConfigSpec SPEC = BUILDER.build();
 
     public static int secondsBeforeAfk;
@@ -56,6 +61,7 @@ public class ServerConfig
     public static Boolean isNoLongerAfkMessageEnabled;
     public static String playerNameFormat;
     public static String afkKickMessage;
+    public static Boolean includeExemptPlayersInSleepVote;
 
 
     @SubscribeEvent
@@ -69,5 +75,6 @@ public class ServerConfig
         isNoLongerAfkMessageEnabled = IS_NO_LONGER_AFK_MESSAGE_ENABLED.get();
         playerNameFormat = PLAYER_NAME_FORMAT.get();
         afkKickMessage = AFK_KICK_MESSAGE.get();
+        includeExemptPlayersInSleepVote = INCLUDE_EXEMPT_PLAYERS_IN_SLEEP_VOTE.get();
     }
 }
