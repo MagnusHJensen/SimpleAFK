@@ -8,6 +8,7 @@ It provides the ability to configure:
 - when a player is marked as afk.
 - when (if at all) a player is kicked for being afk too long.
 - Formatting options to format the afk message, kick message and afk name in tab list.
+- Includes a bypass list that can be configured via commands.
 
 It skips players that are AFK when checking for the percentage of players sleeping.
 

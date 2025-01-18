@@ -25,6 +25,7 @@ public class Permissions {
     public static final PermissionNode<Boolean> TOGGLE_OTHER = new PermissionNode<>(SimpleAFK.MODID, "toggle.target", PermissionTypes.BOOLEAN, (player, playerUUID, context) -> isOp(player));
     public static final PermissionNode<Boolean> BYPASS_AFK = new PermissionNode<>(SimpleAFK.MODID, "bypass", PermissionTypes.BOOLEAN, (player, playerUUID, context) -> isOp(player) || isOnBypassList(player));
     public static final PermissionNode<Boolean> BYPASS_SLEEP = new PermissionNode<>(SimpleAFK.MODID, "bypass_sleep", PermissionTypes.BOOLEAN, (player, playerUUID, context) -> isOp(player));
+    public static final PermissionNode<Boolean> MODIFY_BYPASS = new PermissionNode<>(SimpleAFK.MODID, "bypass.modify", PermissionTypes.BOOLEAN, (player, playerUUID, context) -> isOp(player));
 
 
     private static boolean isOp(ServerPlayer player) {

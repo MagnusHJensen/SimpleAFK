@@ -40,6 +40,7 @@ public class AFKCommands {
                 .executes(ctx -> toggleAfkStatus(ctx.getSource().getPlayerOrException()))
             )
             .then(Commands.literal("bypass-list")
+                .requires(ctx -> hasPermission(ctx, Permissions.MODIFY_BYPASS))
                 .then(Commands.literal("add")
                     .then(Commands.argument("player", EntityArgument.player())
                         .executes(ctx -> addExemptPlayer(ctx.getSource(), EntityArgument.getPlayer(ctx, "player")))
