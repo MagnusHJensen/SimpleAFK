@@ -18,7 +18,9 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -50,6 +52,41 @@ public class SimpleAFK
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (event.player.level().isClientSide()) return;
         AFKManager.getInstance().getPlayer(event.player.getUUID()).tick((ServerPlayer) event.player);
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+        AFKManager.getInstance().getPlayer(event.getEntity().getUUID()).removeAfkStatus();
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
+        AFKManager.getInstance().getPlayer(event.getEntity().getUUID()).removeAfkStatus();
+    }
+
+    @SubscribeEvent
+    public static void onPlayerRightClickEmpty(PlayerInteractEvent.RightClickEmpty event) {
+        AFKManager.getInstance().getPlayer(event.getEntity().getUUID()).removeAfkStatus();
+    }
+
+    @SubscribeEvent
+    public static void onPlayerRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+        AFKManager.getInstance().getPlayer(event.getEntity().getUUID()).removeAfkStatus();
+    }
+
+    @SubscribeEvent
+    public static void onPlayerRightClickItem(PlayerInteractEvent.RightClickItem event) {
+        AFKManager.getInstance().getPlayer(event.getEntity().getUUID()).removeAfkStatus();
+    }
+
+    @SubscribeEvent
+    public static void onPlayerInteractEntity(PlayerInteractEvent.EntityInteract event) {
+        AFKManager.getInstance().getPlayer(event.getEntity().getUUID()).removeAfkStatus();
+    }
+
+    @SubscribeEvent
+    public static void onPlayerAttackEntity(AttackEntityEvent event) {
+        AFKManager.getInstance().getPlayer(event.getEntity().getUUID()).removeAfkStatus();
     }
 
     @SubscribeEvent

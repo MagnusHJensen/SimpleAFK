@@ -15,13 +15,16 @@ import dk.magnusjensen.simpleafk.utils.Utilities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.phys.Vec3;
 
 public class AFKPlayer {
     private final ServerPlayer player;
     private boolean isAfk;
     private long timestampSinceAfk;
     private long timestampSinceLastMove;
+    private long timestampSinceLastLook;
     private BlockPos lastPosition;
+    private Vec3 lastLookAngle;
 
 
     public AFKPlayer(ServerPlayer player) {
@@ -29,6 +32,7 @@ public class AFKPlayer {
         this.isAfk = false;
         this.timestampSinceAfk = System.currentTimeMillis() / 1000;
         this.timestampSinceLastMove = System.currentTimeMillis() / 1000;
+        this.timestampSinceLastLook = System.currentTimeMillis() / 1000;
         this.lastPosition = null;
     }
 
@@ -41,21 +45,26 @@ public class AFKPlayer {
     public void tick(ServerPlayer player) {
         if (Utilities.hasPermission(player, Permissions.BYPASS_AFK) || player.isSleeping()) return; // SKip if the player has the bypass permission.
 
-        if (hasPlayerMoved(player.blockPosition())) {
-            if (isAfk) {
-                removeAfkStatus();
-            } else {
-                move(player.blockPosition());
-            }
-        } else if (player.level().getGameTime() % 20 == 0) {
+        if (hasPlayerLookedAround(player) && hasPlayerMoved(player) && isAfk) {
+            removeAfkStatus();
+        }
+
+        move(player);
+        lookAround(player);
+
+
+        if (player.level().getGameTime() % 20 == 0) {
             long timestampInSeconds = System.currentTimeMillis() / 1000;
             // Check if the player is not marked as AFK, and if the player has not moved for the amount of seconds specified in the config.
-            if (!isAfk && timestampInSeconds - timestampSinceLastMove >= ServerConfig.secondsBeforeAfk) {
+            boolean isMoveAfkFactor = timestampInSeconds - timestampSinceLastMove >= ServerConfig.secondsBeforeAfk;
+            boolean isLookAfkFactor = timestampInSeconds - timestampSinceLastLook >= ServerConfig.secondsBeforeAfk;
+            if (!isAfk && (isMoveAfkFactor || isLookAfkFactor)) {
                 setAfkStatus();
             } else if (
                 ServerConfig.secondsBeforeKick > 0 &&
                     isAfk &&
-                    timestampInSeconds - timestampSinceAfk >= ServerConfig.secondsBeforeKick
+                    (timestampInSeconds - timestampSinceAfk >= ServerConfig.secondsBeforeKick ||
+                    timestampInSeconds - timestampSinceLastMove >= ServerConfig.secondsBeforeKick)
             ) {
                 player.connection.disconnect(Component.literal(ServerConfig.afkKickMessage));
             }
@@ -74,7 +83,7 @@ public class AFKPlayer {
     private void setAfkStatus() {
         this.isAfk = true;
         this.timestampSinceAfk = System.currentTimeMillis() / 1000;
-        move(player.blockPosition());
+        move(player);
         this.player.refreshDisplayName();
         this.player.refreshTabListName();
 
@@ -85,11 +94,13 @@ public class AFKPlayer {
         }
     }
 
-    private void removeAfkStatus() {
+    public void removeAfkStatus() {
+        if (!isAfk) return;
+
         this.isAfk = false;
         this.timestampSinceAfk = System.currentTimeMillis() / 1000;
         this.timestampSinceLastMove = System.currentTimeMillis() / 1000;
-        move(player.blockPosition());
+        move(player);
         this.player.refreshDisplayName();
         this.player.refreshTabListName();
 
@@ -100,13 +111,26 @@ public class AFKPlayer {
         }
     }
 
-    private boolean hasPlayerMoved(BlockPos currentPos) {
-        return !currentPos.equals(getLastPosition());
+    private boolean hasPlayerMoved(ServerPlayer player) {
+        return !player.blockPosition().equals(getLastPosition());
     }
 
-    private void move(BlockPos pos) {
-        this.lastPosition = pos;
-        this.timestampSinceLastMove = System.currentTimeMillis() / 1000;
+    private boolean hasPlayerLookedAround(ServerPlayer player) {
+        return !player.getLookAngle().equals(this.lastLookAngle);
+    }
+
+    private void lookAround(ServerPlayer player) {
+        if (hasPlayerLookedAround(player) && !isAfk) {
+            this.timestampSinceLastLook = System.currentTimeMillis() / 1000;
+            this.lastLookAngle = player.getLookAngle();
+        }
+    }
+
+    private void move(ServerPlayer player) {
+        if (hasPlayerMoved(player) && !isAfk) {
+            this.timestampSinceLastMove = System.currentTimeMillis() / 1000;
+            this.lastPosition = player.blockPosition();
+        }
     }
 
     public ServerPlayer getPlayer() {

@@ -1,2 +1,8 @@
-## 1.20.1 - 1.3.1
-- Fix permission node not registered causing a crash
+## 1.20.1 - 1.4.0
+- Take into account the players look angle - to avoid AFK pools.
+  - To avoid going AFK, a player must both move and look around within the `secondsBeforeAfk` configuration value.
+- Add more player events to check for AFK status.
+  - Left click and right click.
+  - Right click item
+  - Right click entity
+  - Attack entity
