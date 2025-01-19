@@ -38,6 +38,6 @@ public class Permissions {
 
     @SubscribeEvent
     public static void onPermissionGather(PermissionGatherEvent.Nodes event) {
-        event.addNodes(TOGGLE, TOGGLE_OTHER, BYPASS_AFK, BYPASS_SLEEP);
+        event.addNodes(TOGGLE, TOGGLE_OTHER, BYPASS_AFK, BYPASS_SLEEP, MODIFY_BYPASS);
     }
 }
