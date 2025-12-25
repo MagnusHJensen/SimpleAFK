@@ -28,3 +28,24 @@ _**NOTE:** The default defined in () only matters if you are **NOT** using a per
 - `simpleafk.bypass_sleep` - Allows the player to bypass the [sleep required percentage](https://minecraft.fandom.com/wiki/Game_rule) check (Default: Only OP's have this permission)
 
 </details>
+
+## Wiki
+
+Check out the [wiki](https://github.com/magnushjensen/simpleafk/wiki) for detailed documentation.
+
+If you think anything is missing from the wiki that is unclear, send a message in the discord or open an [improve documentation issue](https://github.com/MagnusHJensen/simpleafk/issues/new?template=3.Improve_docs.md).
+
+## Roadmap
+
+Check out the version [milestones](https://github.com/MagnusHJensen/simpleafk/milestones)
+
+## Links
+
+Join my [Discord](https://discord.gg/PHu8k32M3q) for support and updates! (Just created, so barebones)
+- [CurseForge page](https://www.curseforge.com/minecraft/mc-mods/simpleafk)
+- [Modrinth page](https://modrinth.com/mod/simpleafk)
+
+
+## Thanks to
+
+- [jaredlll08](https://github.com/jaredlll08) for creating [`Multiloader-Template`](https://github.com/jaredlll08/MultiLoader-Template)
