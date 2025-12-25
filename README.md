@@ -1,6 +1,6 @@
 # SimpleAFK
 
-![AFK Tab List](https://github.com/MagnusHJensen/SimpleAFK/blob/1.20.x/images/afk-tab-list.png?raw=true "Tab list with an AKF tag added to the Dev player")
+![AFK Tab List](https://github.com/MagnusHJensen/SimpleAFK/blob/1.20.1/images/afk-tab-list.png?raw=true "Tab list with an AKF tag added to the Dev player")
 
 ### This mod enables simple AFK management for servers.
 
@@ -14,7 +14,7 @@ It skips players that are AFK when checking for the percentage of players sleepi
 
 _This overrides the vanilla `setIdleTimeout` command, and discards any values set in there._
 
-![AFK Messages](https://github.com/MagnusHJensen/SimpleAFK/blob/1.20.x/images/afk-messages.png?raw=true "Chat messages of a player going AFK and then no longer being marked as AFK")
+![AFK Messages](https://github.com/MagnusHJensen/SimpleAFK/blob/1.20.1/images/afk-messages.png?raw=true "Chat messages of a player going AFK and then no longer being marked as AFK")
 
 <details>
 <summary><b>Permission Nodes</b></summary>
