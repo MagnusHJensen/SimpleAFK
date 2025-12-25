@@ -1,0 +1,35 @@
+#How many seconds before the player is marked as AFK
+# Default: 300
+# Range: > 5
+secondsBeforeAfk = 300
+#How many seconds before the player is kicked after being marked as AFK
+#Set to 0 to disable kicking
+# Default: 300
+# Range: > 0
+secondsBeforeKick = 300
+#How the message should be displayed when a player is marked as AFK
+#Can be edited with the regular minecraft chat codes which can be found here https://minecraft.fandom.com/wiki/Formatting_codes#Color_codes
+#$player will be replaced with the actual player name
+#$player is required to appear in the text
+isNowAfkMessage = "§e§o$player is now AFK"
+#Whether or not the player is now AFK message should be sent to all players.
+#Note: It will always be sent to the player that has gone AFK.
+isNowAfkMessageEnabled = true
+#How the message should be displayed when a player is no longer marked as AFK
+#Can be edited with the regular minecraft chat codes which can be found here https://minecraft.fandom.com/wiki/Formatting_codes#Color_codes
+#$player will be replaced with the actual player name
+#$player is required to appear in the text
+isNoLongerAfkMessage = "§e§o$player is no longer AFK"
+#Whether or not the player is no longer AFK message should be sent to all players.
+#Note: It will always be sent to the player that is no longer AFK.
+isNoLongerAfkMessageEnabled = true
+#How the player name should appear when a player is AFK (includes tab list and nametag above player)
+#Can be edited with the regular minecraft chat codes which can be found here https://minecraft.fandom.com/wiki/Formatting_codes#Color_codes
+#$player will be replaced with the actual player name
+#$player is required to appear in the text
+playerNameFormat = "§7[AFK] §r$player"
+#The message that will be sent to the player after being kicked for being AFK too long.
+#Can be edited with the regular minecraft chat codes which can be found here https://minecraft.fandom.com/wiki/Formatting_codes#Color_codes
+afkKickMessage = "§1You have been kicked for being AFK too long."
+#Whether exempt players should be included in the sleep vote.
+includeExemptPlayersInSleepVote = false

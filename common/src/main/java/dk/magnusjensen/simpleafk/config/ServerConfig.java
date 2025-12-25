@@ -9,45 +9,46 @@
 
 package dk.magnusjensen.simpleafk.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.config.ModConfig;
+
+import net.neoforged.neoforge.common.ModConfigSpec;
+
 
 public class ServerConfig
 {
-    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+    private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
-    private static final ForgeConfigSpec.IntValue SECONDS_BEFORE_AFK = BUILDER
+    private static final ModConfigSpec.IntValue SECONDS_BEFORE_AFK = BUILDER
         .comment("How many seconds before the player is marked as AFK")
         .defineInRange("secondsBeforeAfk", 300, 5, Integer.MAX_VALUE);
-    private static final ForgeConfigSpec.IntValue SECONDS_BEFORE_KICK = BUILDER
+    private static final ModConfigSpec.IntValue SECONDS_BEFORE_KICK = BUILDER
         .comment("How many seconds before the player is kicked after being marked as AFK", "Set to 0 to disable kicking")
         .defineInRange("secondsBeforeKick", 300, 0, Integer.MAX_VALUE);
-    private static final ForgeConfigSpec.ConfigValue<String> IS_NOW_AFK_MESSAGE = BUILDER
+    private static final ModConfigSpec.ConfigValue<String> IS_NOW_AFK_MESSAGE = BUILDER
         .comment("How the message should be displayed when a player is marked as AFK", "Can be edited with the regular minecraft chat codes which can be found here https://minecraft.fandom.com/wiki/Formatting_codes#Color_codes", "$player will be replaced with the actual player name", "$player is required to appear in the text")
         .define("isNowAfkMessage", "§e§o$player is now AFK", (obj) -> obj instanceof String && obj.toString().contains("$player"));
 
-    private static final ForgeConfigSpec.ConfigValue<Boolean> IS_NOW_AFK_MESSAGE_ENABLED = BUILDER
+    private static final ModConfigSpec.ConfigValue<Boolean> IS_NOW_AFK_MESSAGE_ENABLED = BUILDER
         .comment("Whether or not the player is now AFK message should be sent to all players.", "Note: It will always be sent to the player that has gone AFK.")
         .define("isNowAfkMessageEnabled", true);
-    private static final ForgeConfigSpec.ConfigValue<String> IS_NO_LONGER_AFK_MESSAGE = BUILDER
+    private static final ModConfigSpec.ConfigValue<String> IS_NO_LONGER_AFK_MESSAGE = BUILDER
         .comment("How the message should be displayed when a player is no longer marked as AFK", "Can be edited with the regular minecraft chat codes which can be found here https://minecraft.fandom.com/wiki/Formatting_codes#Color_codes", "$player will be replaced with the actual player name", "$player is required to appear in the text")
         .define("isNoLongerAfkMessage", "§e§o$player is no longer AFK", (obj) -> obj instanceof String && obj.toString().contains("$player"));
 
-    private static final ForgeConfigSpec.ConfigValue<Boolean> IS_NO_LONGER_AFK_MESSAGE_ENABLED = BUILDER
+    private static final ModConfigSpec.ConfigValue<Boolean> IS_NO_LONGER_AFK_MESSAGE_ENABLED = BUILDER
         .comment("Whether or not the player is no longer AFK message should be sent to all players.", "Note: It will always be sent to the player that is no longer AFK.")
         .define("isNoLongerAfkMessageEnabled", true);
-    private static final ForgeConfigSpec.ConfigValue<String> PLAYER_NAME_FORMAT = BUILDER
+    private static final ModConfigSpec.ConfigValue<String> PLAYER_NAME_FORMAT = BUILDER
         .comment("How the player name should appear when a player is AFK (includes tab list and nametag above player)", "Can be edited with the regular minecraft chat codes which can be found here https://minecraft.fandom.com/wiki/Formatting_codes#Color_codes", "$player will be replaced with the actual player name", "$player is required to appear in the text")
         .define("playerNameFormat", "§7[AFK] §r$player", (obj) -> obj instanceof String && obj.toString().contains("$player"));
-    private static final ForgeConfigSpec.ConfigValue<String> AFK_KICK_MESSAGE = BUILDER
+    private static final ModConfigSpec.ConfigValue<String> AFK_KICK_MESSAGE = BUILDER
         .comment("The message that will be sent to the player after being kicked for being AFK too long.", "Can be edited with the regular minecraft chat codes which can be found here https://minecraft.fandom.com/wiki/Formatting_codes#Color_codes")
         .define("afkKickMessage", "§1You have been kicked for being AFK too long.", (obj) -> obj instanceof String);
 
-    private static final ForgeConfigSpec.ConfigValue<Boolean> INCLUDE_EXEMPT_PLAYERS_IN_SLEEP_VOTE = BUILDER
+    private static final ModConfigSpec.ConfigValue<Boolean> INCLUDE_EXEMPT_PLAYERS_IN_SLEEP_VOTE = BUILDER
         .comment("Whether exempt players should be included in the sleep vote.")
         .define("includeExemptPlayersInSleepVote", false);
 
-    public static final ForgeConfigSpec SPEC = BUILDER.build();
+    public static final ModConfigSpec SPEC = BUILDER.build();
 
     public static int secondsBeforeAfk;
     public static int secondsBeforeKick;
@@ -59,7 +60,7 @@ public class ServerConfig
     public static String afkKickMessage;
     public static Boolean includeExemptPlayersInSleepVote;
 
-    public static void onModConfigEvent(ModConfig event) {
+    public static void onModConfigEvent() {
         secondsBeforeAfk = SECONDS_BEFORE_AFK.get();
         secondsBeforeKick = SECONDS_BEFORE_KICK.get();
         isNowAfkMessage = IS_NOW_AFK_MESSAGE.get();

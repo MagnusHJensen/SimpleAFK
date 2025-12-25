@@ -9,6 +9,7 @@
 
 package dk.magnusjensen.simpleafk;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
@@ -47,7 +48,7 @@ public class AFKData extends SavedData {
 
 
     @Override
-    public CompoundTag save(CompoundTag compoundTag) {
+    public CompoundTag save(CompoundTag compoundTag, HolderLookup.Provider provider) {
         ListTag exemptPlayersTag = new ListTag();
         for (UUID player : exemptPlayers) {
             exemptPlayersTag.add(NbtUtils.createUUID(player));
@@ -57,17 +58,21 @@ public class AFKData extends SavedData {
         return compoundTag;
     }
 
-    public AFKData() {
-    }
-
-    public AFKData(CompoundTag tag) {
+    public static AFKData load(CompoundTag tag, HolderLookup.Provider lookupProvider) {
+        AFKData data = new AFKData();
         ListTag exemptPlayersTag = tag.getList("exemptPlayers", 11);
         for (Tag value : exemptPlayersTag) {
-            this.addExemptPlayer(NbtUtils.loadUUID(value));
+            data.addExemptPlayer(NbtUtils.loadUUID(value));
         }
+
+        return data;
+    }
+
+    public static AFKData create() {
+        return new AFKData();
     }
 
     public static AFKData get(MinecraftServer server) {
-        return server.overworld().getDataStorage().computeIfAbsent(AFKData::new, AFKData::new, "afk_data");
+        return server.overworld().getDataStorage().computeIfAbsent(new Factory<>(AFKData::create, AFKData::load, null), "afk_data");
     }
 }
