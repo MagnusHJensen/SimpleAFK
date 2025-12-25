@@ -51,6 +51,17 @@ unifiedPublishing {
         gameVersions = ["1.20.1", "1.20.2", "1.20.3"]
         gameLoaders = ["fabric"]
 
+        relations {
+            depends {
+                modrinth = "forge-config-api-port"
+                curseforge = "forge-config-api-port"
+            }
+            depends {
+                modrinth = "fabric-api"
+                curseforge = "fabric-api"
+            }
+        }
+
         mainPublication tasks.named('remapJar').flatMap { it.archiveFile } // Declares the publicated jar
 
 
