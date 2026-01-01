@@ -39,7 +39,9 @@ public class NeoforgeSimpleAFK {
     @SubscribeEvent
     public static void onPlayerTick(PlayerTickEvent.Post event) {
         if (event.getEntity().level().isClientSide()) return;
-        AFKManager.getInstance().getPlayer(event.getEntity().getUUID()).tick((ServerPlayer) event.getEntity());
+        var player = AFKManager.getInstance().getPlayer(event.getEntity().getUUID());
+        if (player == null) return;
+        player.tick((ServerPlayer) event.getEntity());
     }
 
     @SubscribeEvent

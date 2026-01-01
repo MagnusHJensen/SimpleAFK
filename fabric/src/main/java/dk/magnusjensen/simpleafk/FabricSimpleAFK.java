@@ -33,7 +33,9 @@ public class FabricSimpleAFK implements ModInitializer {
         // Interaction events
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             server.getPlayerList().getPlayers().forEach(player -> {
-                AFKManager.getInstance().getPlayer(player.getUUID()).tick(player);
+                var afkPlayer = AFKManager.getInstance().getPlayer(player.getUUID());
+                if (afkPlayer == null) return;
+                afkPlayer.tick(player);
             });
         });
 

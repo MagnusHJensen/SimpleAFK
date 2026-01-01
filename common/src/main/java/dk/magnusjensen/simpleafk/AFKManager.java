@@ -10,6 +10,7 @@
 package dk.magnusjensen.simpleafk;
 
 import net.minecraft.server.level.ServerPlayer;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +24,7 @@ public class AFKManager {
         this.players = new HashMap<>();
     }
 
+    @Nullable
     public AFKPlayer getPlayer(UUID uuid) {
         return players.get(uuid);
     }
