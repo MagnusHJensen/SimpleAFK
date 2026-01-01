@@ -1,3 +1,2 @@
-# 1.5.0 - 1.20.1
-- MultiLoader setup
-- Made AFK checks null safe for non player entities.
+# 1.5.1 - 1.20.1
+- Fixed a tick crash

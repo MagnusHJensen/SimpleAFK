@@ -40,7 +40,9 @@ public class ForgeSimpleAFK {
     @SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (event.player.level().isClientSide()) return;
-        AFKManager.getInstance().getPlayer(event.player.getUUID()).tick((ServerPlayer) event.player);
+        var player = AFKManager.getInstance().getPlayer(event.player.getUUID());
+        if (player == null) return;
+        player.tick((ServerPlayer) event.player);
     }
 
     @SubscribeEvent
