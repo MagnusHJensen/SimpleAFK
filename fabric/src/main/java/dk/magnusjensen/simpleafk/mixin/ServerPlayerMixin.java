@@ -5,7 +5,6 @@ import dk.magnusjensen.simpleafk.AFKManager;
 import dk.magnusjensen.simpleafk.AFKPlayer;
 import dk.magnusjensen.simpleafk.config.ServerConfig;
 import dk.magnusjensen.simpleafk.utils.Utilities;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -17,8 +16,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin extends Player {
 
-    public ServerPlayerMixin(Level level, BlockPos pos, float yRot, GameProfile gameProfile) {
-        super(level, pos, yRot, gameProfile);
+
+    public ServerPlayerMixin(Level level, GameProfile gameProfile) {
+        super(level, gameProfile);
     }
 
     @Inject(at = @org.spongepowered.asm.mixin.injection.At("HEAD"), method = "getTabListDisplayName", cancellable = true)
@@ -27,7 +27,7 @@ public abstract class ServerPlayerMixin extends Player {
         AFKPlayer afkPlayer = manager.getPlayer(this.getUUID());
         if (afkPlayer != null && afkPlayer.isAfk()) {
             Component name = this.getDisplayName();
-            cir.setReturnValue(Utilities.formatMessageWithComponent(ServerConfig.playerNameFormat, "player", name));
+            cir.setReturnValue(Utilities.formatMessageWithComponent(ServerConfig.CONFIG.playerNameFormat.get(), "player", name));
         }
     }
 }

@@ -9,13 +9,11 @@
 
 package dk.magnusjensen.simpleafk;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 
 import java.util.HashSet;
 import java.util.List;
@@ -23,10 +21,28 @@ import java.util.Set;
 import java.util.UUID;
 
 public class AFKData extends SavedData {
+
+    public static final SavedDataType<AFKData> ID = new SavedDataType<>(
+        "simpleafk",
+        AFKData::new,
+        RecordCodecBuilder.create(instance -> instance.group(
+            UUIDUtil.CODEC_SET.fieldOf("exemptPlayers").forGetter(data -> data.exemptPlayers)
+        ).apply(instance, AFKData::new)),
+        null
+    );
+
     /**
      * List of players that are exempt from being marked as AFK
      */
-    private final Set<UUID> exemptPlayers = new HashSet<>();
+    private final Set<UUID> exemptPlayers;
+
+    public AFKData() {
+        this.exemptPlayers = new HashSet<>();
+    }
+
+    public AFKData(Set<UUID> exemptPlayers) {
+        this.exemptPlayers = exemptPlayers;
+    }
 
     public boolean isPlayerExempt(UUID player) {
         return exemptPlayers.contains(player);
@@ -47,32 +63,7 @@ public class AFKData extends SavedData {
     }
 
 
-    @Override
-    public CompoundTag save(CompoundTag compoundTag, HolderLookup.Provider provider) {
-        ListTag exemptPlayersTag = new ListTag();
-        for (UUID player : exemptPlayers) {
-            exemptPlayersTag.add(NbtUtils.createUUID(player));
-        }
-
-        compoundTag.put("exemptPlayers", exemptPlayersTag);
-        return compoundTag;
-    }
-
-    public static AFKData load(CompoundTag tag, HolderLookup.Provider lookupProvider) {
-        AFKData data = new AFKData();
-        ListTag exemptPlayersTag = tag.getList("exemptPlayers", 11);
-        for (Tag value : exemptPlayersTag) {
-            data.addExemptPlayer(NbtUtils.loadUUID(value));
-        }
-
-        return data;
-    }
-
-    public static AFKData create() {
-        return new AFKData();
-    }
-
     public static AFKData get(MinecraftServer server) {
-        return server.overworld().getDataStorage().computeIfAbsent(new Factory<>(AFKData::create, AFKData::load, null), "afk_data");
+        return server.overworld().getDataStorage().computeIfAbsent(ID);
     }
 }

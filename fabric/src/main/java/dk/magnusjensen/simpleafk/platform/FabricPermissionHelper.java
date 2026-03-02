@@ -3,12 +3,12 @@ package dk.magnusjensen.simpleafk.platform;
 import dk.magnusjensen.simpleafk.AFKData;
 import dk.magnusjensen.simpleafk.platform.services.IPermissionHelper;
 import dk.magnusjensen.simpleafk.utils.Permissions;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
 public class FabricPermissionHelper implements IPermissionHelper {
     @Override
-    public boolean hasPermission(ServerPlayer player, ResourceLocation permission) {
+    public boolean hasPermission(ServerPlayer player, Identifier permission) {
         if (permission.equals(Permissions.TOGGLE)) {
             return true;
         } else if (permission.equals(Permissions.TOGGLE_OTHER)) {
@@ -25,10 +25,10 @@ public class FabricPermissionHelper implements IPermissionHelper {
 
 
     private static boolean isOp(ServerPlayer player) {
-        return player.getServer().getPlayerList().isOp(player.getGameProfile());
+        return player.level().getServer().getPlayerList().isOp(player.nameAndId());
     }
 
     private static boolean isOnBypassList(ServerPlayer player) {
-        return AFKData.get(player.server).isPlayerExempt(player.getUUID());
+        return AFKData.get(player.level().getServer()).isPlayerExempt(player.getUUID());
     }
 }

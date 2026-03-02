@@ -10,7 +10,7 @@
 package dk.magnusjensen.simpleafk;
 
 import dk.magnusjensen.simpleafk.utils.Permissions;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -23,7 +23,7 @@ import net.neoforged.neoforge.server.permission.nodes.PermissionTypes;
 import java.util.HashMap;
 import java.util.Map;
 
-@EventBusSubscriber(modid = Constants.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = Constants.MOD_ID)
 public class NeoforgePermissions {
     public static final PermissionNode<Boolean> TOGGLE = registerPermissionNode(Permissions.TOGGLE, (player, playerUUID, context) -> true);
     public static final PermissionNode<Boolean> TOGGLE_OTHER = registerPermissionNode(Permissions.TOGGLE_OTHER, (player, playerUUID, context) -> isOp(player));
@@ -31,9 +31,9 @@ public class NeoforgePermissions {
     public static final PermissionNode<Boolean> BYPASS_SLEEP = registerPermissionNode(Permissions.BYPASS_SLEEP, (player, playerUUID, context) -> isOp(player));
     public static final PermissionNode<Boolean> MODIFY_BYPASS = registerPermissionNode(Permissions.MODIFY_BYPASS, (player, playerUUID, context) -> isOp(player));
 
-    public static Map<ResourceLocation, PermissionNode<Boolean>> PERMISSION_NODES;
+    public static Map<Identifier, PermissionNode<Boolean>> PERMISSION_NODES;
 
-    private static PermissionNode<Boolean> registerPermissionNode(ResourceLocation id, PermissionNode.PermissionResolver<Boolean> defaultResolver, PermissionDynamicContextKey... dynamics) {
+    private static PermissionNode<Boolean> registerPermissionNode(Identifier id, PermissionNode.PermissionResolver<Boolean> defaultResolver, PermissionDynamicContextKey... dynamics) {
         var node = new PermissionNode<>(
             id,
             PermissionTypes.BOOLEAN,
@@ -50,11 +50,11 @@ public class NeoforgePermissions {
 
 
     private static boolean isOp(ServerPlayer player) {
-        return ServerLifecycleHooks.getCurrentServer().getPlayerList().isOp(player.getGameProfile());
+        return ServerLifecycleHooks.getCurrentServer().getPlayerList().isOp(player.nameAndId());
     }
 
     private static boolean isOnBypassList(ServerPlayer player) {
-        return AFKData.get(player.server).isPlayerExempt(player.getUUID());
+        return AFKData.get(player.level().getServer()).isPlayerExempt(player.getUUID());
     }
 
     @SubscribeEvent

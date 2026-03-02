@@ -20,7 +20,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
 
@@ -103,7 +103,7 @@ public class AFKCommands {
         return 0;
     }
 
-    public static boolean hasPermission(CommandSourceStack ctx, ResourceLocation node) {
+    public static boolean hasPermission(CommandSourceStack ctx, Identifier node) {
         try {
             ServerPlayer player = ctx.getPlayerOrException();
             return Utilities.hasPermission(player, node);

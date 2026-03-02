@@ -13,7 +13,7 @@ package dk.magnusjensen.simpleafk.utils;
 import dk.magnusjensen.simpleafk.AFKManager;
 import dk.magnusjensen.simpleafk.platform.Services;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -32,7 +32,7 @@ public class Utilities {
         server.getPlayerList().broadcastSystemMessage(message, false);
     }
 
-    public static boolean hasPermission(ServerPlayer player, ResourceLocation node) {
+    public static boolean hasPermission(ServerPlayer player, Identifier node) {
         return Services.PERMISSION.hasPermission(player, node);
     }
 

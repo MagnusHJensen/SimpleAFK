@@ -11,6 +11,7 @@ pluginManagement {
             }
             filter {
                 includeGroup('net.fabricmc')
+                includeGroup('net.fabricmc.unpick')
                 includeGroup('fabric-loom')
             }
         }
@@ -36,7 +37,6 @@ pluginManagement {
                 includeGroupAndSubgroups('net.minecraftforge')
             }
         }
-        maven { url "https://maven.architectury.dev/" }
     }
 
 }

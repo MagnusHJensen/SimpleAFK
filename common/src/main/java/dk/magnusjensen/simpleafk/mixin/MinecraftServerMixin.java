@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(MinecraftServer.class)
 public class MinecraftServerMixin {
 
-    @Inject(method = "getPlayerIdleTimeout", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "playerIdleTimeout", at = @At("HEAD"), cancellable = true)
     private void onGetPlayerIdleTimeout(CallbackInfoReturnable<Integer> cir) {
         cir.setReturnValue(0);
     }

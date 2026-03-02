@@ -57,17 +57,17 @@ public class AFKPlayer {
         if (player.level().getGameTime() % 20 == 0) {
             long timestampInSeconds = System.currentTimeMillis() / 1000;
             // Check if the player is not marked as AFK, and if the player has not moved for the amount of seconds specified in the config.
-            boolean isMoveAfkFactor = timestampInSeconds - timestampSinceLastMove >= ServerConfig.secondsBeforeAfk;
-            boolean isLookAfkFactor = timestampInSeconds - timestampSinceLastLook >= ServerConfig.secondsBeforeAfk;
+            boolean isMoveAfkFactor = timestampInSeconds - timestampSinceLastMove >= ServerConfig.CONFIG.secondsBeforeAfk.get();
+            boolean isLookAfkFactor = timestampInSeconds - timestampSinceLastLook >=  ServerConfig.CONFIG.secondsBeforeAfk.get();
             if (!isAfk && (isMoveAfkFactor || isLookAfkFactor)) {
                 setAfkStatus();
             } else if (
-                ServerConfig.secondsBeforeKick > 0 &&
+                ServerConfig.CONFIG.secondsBeforeKick.get() > 0 &&
                     isAfk &&
-                    (timestampInSeconds - timestampSinceAfk >= ServerConfig.secondsBeforeKick ||
-                        timestampInSeconds - timestampSinceLastMove >= ServerConfig.secondsBeforeKick)
+                    (timestampInSeconds - timestampSinceAfk >=  ServerConfig.CONFIG.secondsBeforeKick.get() ||
+                        timestampInSeconds - timestampSinceLastMove >=  ServerConfig.CONFIG.secondsBeforeKick.get())
             ) {
-                player.connection.disconnect(Component.literal(ServerConfig.afkKickMessage));
+                player.connection.disconnect(Component.literal( ServerConfig.CONFIG.afkKickMessage.get()));
             }
         }
 
@@ -87,10 +87,10 @@ public class AFKPlayer {
         move(player);
         Services.PLATFORM.refreshTabListName(this.player);
 
-        if (ServerConfig.isNowAfkMessageEnabled) {
-            Utilities.broadcastSystemMessage(Utilities.formatMessageWithPlayerName(ServerConfig.isNowAfkMessage, player.getDisplayName().getString()), player.getServer());
+        if (ServerConfig.CONFIG.isNowAfkMessageEnabled.get()) {
+            Utilities.broadcastSystemMessage(Utilities.formatMessageWithPlayerName(ServerConfig.CONFIG.isNowAfkMessage.get(), player.getDisplayName().getString()), player.level().getServer());
         } else {
-            player.sendSystemMessage(Utilities.formatMessageWithPlayerName(ServerConfig.isNowAfkMessage, player.getDisplayName().getString()), false);
+            player.sendSystemMessage(Utilities.formatMessageWithPlayerName(ServerConfig.CONFIG.isNowAfkMessage.get(), player.getDisplayName().getString()), false);
         }
     }
 
@@ -103,10 +103,10 @@ public class AFKPlayer {
         move(player);
         Services.PLATFORM.refreshTabListName(this.player);
 
-        if (ServerConfig.isNoLongerAfkMessageEnabled) {
-            Utilities.broadcastSystemMessage(Utilities.formatMessageWithPlayerName(ServerConfig.isNoLongerAfkMessage, player.getDisplayName().getString()), player.getServer());
+        if (ServerConfig.CONFIG.isNoLongerAfkMessageEnabled.get()) {
+            Utilities.broadcastSystemMessage(Utilities.formatMessageWithPlayerName(ServerConfig.CONFIG.isNoLongerAfkMessage.get(), player.getDisplayName().getString()), player.level().getServer());
         } else {
-            player.sendSystemMessage(Utilities.formatMessageWithPlayerName(ServerConfig.isNoLongerAfkMessage, player.getDisplayName().getString()), false);
+            player.sendSystemMessage(Utilities.formatMessageWithPlayerName(ServerConfig.CONFIG.isNoLongerAfkMessage.get(), player.getDisplayName().getString()), false);
         }
     }
 
@@ -152,7 +152,7 @@ public class AFKPlayer {
     }
 
     public boolean bypassesSleep() {
-        return isAfk() || Utilities.hasPermission(player, Permissions.BYPASS_SLEEP) || AFKData.get(player.server).isPlayerExempt(player.getUUID());
+        return isAfk() || Utilities.hasPermission(player, Permissions.BYPASS_SLEEP) || AFKData.get(player.level().getServer()).isPlayerExempt(player.getUUID());
     }
 
     public BlockPos getLastPosition() {

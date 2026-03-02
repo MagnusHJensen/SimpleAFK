@@ -3,8 +3,8 @@ package dk.magnusjensen.simpleafk;
 import dk.magnusjensen.simpleafk.commands.AFKCommands;
 import dk.magnusjensen.simpleafk.config.ServerConfig;
 import dk.magnusjensen.simpleafk.utils.Utilities;
-import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.NeoForgeConfigRegistry;
-import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.NeoForgeModConfigEvents;
+import fuzs.forgeconfigapiport.fabric.api.v5.ConfigRegistry;
+import fuzs.forgeconfigapiport.fabric.api.v5.ModConfigEvents;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -12,8 +12,9 @@ import net.fabricmc.fabric.api.event.player.*;
 import net.fabricmc.fabric.api.message.v1.ServerMessageEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.neoforged.fml.config.ModConfig;
+
+import java.util.ArrayList;
 
 public class FabricSimpleAFK implements ModInitializer {
     
@@ -25,14 +26,29 @@ public class FabricSimpleAFK implements ModInitializer {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> dispatcher.register(AFKCommands.register()));
 
         // Register to all mod config events for our server config
-        NeoForgeConfigRegistry.INSTANCE.register(Constants.MOD_ID, ModConfig.Type.SERVER, ServerConfig.SPEC);
-        NeoForgeModConfigEvents.reloading(Constants.MOD_ID).register(config -> ServerConfig.onModConfigEvent());
-        NeoForgeModConfigEvents.loading(Constants.MOD_ID).register(config -> ServerConfig.onModConfigEvent());
-        NeoForgeModConfigEvents.unloading(Constants.MOD_ID).register(config -> ServerConfig.onModConfigEvent());
+        ConfigRegistry.INSTANCE.register(Constants.MOD_ID, ModConfig.Type.SERVER, ServerConfig.CONFIG_SPEC);
+        ModConfigEvents.reloading(Constants.MOD_ID).register(config -> {
+            if (config.getLoadedConfig() == null) {
+                return;
+            }
+            ServerConfig.CONFIG.onModConfigEvent(config.getLoadedConfig().config());
+        });
+        ModConfigEvents.loading(Constants.MOD_ID).register(config -> {
+            if (config.getLoadedConfig() == null) {
+                return;
+            }
+            ServerConfig.CONFIG.onModConfigEvent(config.getLoadedConfig().config());
+        });
+        ModConfigEvents.unloading(Constants.MOD_ID).register(config -> {
+            if (config.getLoadedConfig() == null) {
+                return;
+            }
+            ServerConfig.CONFIG.onModConfigEvent(config.getLoadedConfig().config());
+        });
 
         // Interaction events
         ServerTickEvents.END_SERVER_TICK.register(server -> {
-            server.getPlayerList().getPlayers().forEach(player -> {
+            new ArrayList<>(server.getPlayerList().getPlayers()).forEach(player -> {
                 var afkPlayer = AFKManager.getInstance().getPlayer(player.getUUID());
                 if (afkPlayer == null) return;
                 afkPlayer.tick(player);
@@ -56,7 +72,7 @@ public class FabricSimpleAFK implements ModInitializer {
 
         UseItemCallback.EVENT.register((player, world, hand) -> {
             Utilities.removeAfkStatusFromPlayer(player);
-            return InteractionResultHolder.pass(player.getItemInHand(hand));
+            return InteractionResult.PASS;
         });
 
         UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {

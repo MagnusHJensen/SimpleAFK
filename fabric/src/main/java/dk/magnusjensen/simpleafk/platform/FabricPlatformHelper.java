@@ -28,6 +28,6 @@ public class FabricPlatformHelper implements IPlatformHelper {
 
     @Override
     public void refreshTabListName(ServerPlayer player) {
-        player.getServer().getPlayerList().broadcastAll(new ClientboundPlayerInfoUpdatePacket(Action.UPDATE_DISPLAY_NAME, player));
+        player.level().getServer().getPlayerList().broadcastAll(new ClientboundPlayerInfoUpdatePacket(Action.UPDATE_DISPLAY_NAME, player));
     }
 }

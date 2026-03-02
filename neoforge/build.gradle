@@ -1,7 +1,9 @@
 plugins {
     id 'multiloader-loader'
     id 'net.neoforged.moddev'
-    id "me.shedaniel.unified-publishing" version "0.1.+"
+
+    id "com.modrinth.minotaur" version "2.+"
+    id "io.github.CDAGaming.cursegradle" version "1.6.1"
 }
 
 neoForge {
@@ -24,7 +26,7 @@ neoForge {
             client()
         }
         data {
-            data()
+            clientData()
 
             // DataGen can be run by - "./gradlew :neoforge:runData" in Terminal.
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
@@ -44,35 +46,52 @@ neoForge {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
+// Implement mcgradleconventions loader attribute
+def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
+['apiElements', 'runtimeElements', 'sourcesElements', 'javadocElements'].each { variant ->
+    configurations.named("$variant") {
+        attributes {
+            attribute(loaderAttribute, 'neoforge')
+        }
+    }
+}
+sourceSets.configureEach {
+    [it.compileClasspathConfigurationName, it.runtimeClasspathConfigurationName, it.getTaskName(null, 'jarJar')].each { variant->
+        configurations.named("$variant") {
+            attributes {
+                attribute(loaderAttribute, 'neoforge')
+            }
+        }
+    }
+}
 
-unifiedPublishing {
-    def mod_version = version
+modrinth {
+    token = System.getenv("MODRINTH_TOKEN")
+    projectId = "bI9lnAFH" // Required, must be a string, ID of Modrinth project
+    versionName = "${mod_name} (NeoForge) - v${version} - ${minecraft_version}"
+    versionType = "release"
+    uploadFile = jar
+    gameVersions = ["1.21.11"]
+    loaders = ["neoforge"]
+    changelog = rootProject.file("CHANGELOG.md").text
+}
+
+curseforge {
     project {
-        displayName = "${mod_name} (Forge) - v${mod_version} - ${minecraft_version}" // Optional, name of the file
-        version = "${mod_version}" // Optional, Inferred from project by default
-        changelog = rootProject.file("CHANGELOG.md").text // Optional, in markdown format
-        releaseType = "release" // Optional, use "release", "beta" or "alpha"
-        gameVersions = ["1.21.1"]
-        gameLoaders = ["neoforge"]
+        apiKey = System.getenv("CURSEFORGE_TOKEN")
 
-        mainPublication tasks.named('jar', Jar).flatMap { it.archiveFile } // Declares the publicated jar
+        id = "908384"
+        releaseType = "release"
 
 
-        var cfToken = System.getenv("CURSEFORGE_TOKEN")
-        if (cfToken != null) {
-            curseforge {
-                token = System.getenv("CURSEFORGE_TOKEN")
-                id = "908384" // Required, must be a string, ID of CurseForge project
-            }
+        changelog = rootProject.file("CHANGELOG.md").text
+        changelogType = "markdown"
+        gameVersionStrings = ["1.21.11", "NeoForge"]
+        mainArtifact(jar) {
+            it.displayName = "${mod_name} (NeoForge) - v${version} - ${minecraft_version}"
         }
-
-
-        var mrToken = System.getenv("MODRINTH_TOKEN")
-        if (mrToken != null) {
-            modrinth {
-                token = System.getenv("MODRINTH_TOKEN")
-                id = "bI9lnAFH" // Required, must be a string, ID of Modrinth project
-            }
-        }
+    }
+    options {
+        debug = true
     }
 }

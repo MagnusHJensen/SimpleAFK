@@ -20,7 +20,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 
 @Mod(Constants.MOD_ID)
-@EventBusSubscriber(modid = Constants.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = Constants.MOD_ID)
 public class NeoforgeSimpleAFK {
     
     public NeoforgeSimpleAFK(IEventBus modEventBus, ModContainer modContainer) {
@@ -28,11 +28,14 @@ public class NeoforgeSimpleAFK {
         CommonClass.init();
         modEventBus.addListener(this::onConfigUpdates);
 
-        modContainer.registerConfig(ModConfig.Type.SERVER, ServerConfig.SPEC);
+        modContainer.registerConfig(ModConfig.Type.SERVER, ServerConfig.CONFIG_SPEC);
     }
 
     private void onConfigUpdates(final ModConfigEvent event) {
-        ServerConfig.onModConfigEvent();
+        if (event.getConfig().getLoadedConfig() == null) {
+            return;
+        }
+        ServerConfig.CONFIG.onModConfigEvent(event.getConfig().getLoadedConfig().config());
     }
 
 
@@ -101,7 +104,7 @@ public class NeoforgeSimpleAFK {
         AFKPlayer player = manager.getPlayer(event.getEntity().getUUID());
         if (player != null && player.isAfk()) {
             Component name = event.getDisplayName() != null ? event.getDisplayName() : Component.literal(event.getEntity().getScoreboardName());
-            event.setDisplayName(Utilities.formatMessageWithComponent(ServerConfig.playerNameFormat, "player", name));
+            event.setDisplayName(Utilities.formatMessageWithComponent(ServerConfig.CONFIG.playerNameFormat.get(), "player", name));
         }
     }
 
