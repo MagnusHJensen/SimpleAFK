@@ -44,7 +44,7 @@ loom {
 
 // Implement mcgradleconventions loader attribute
 def loaderAttribute = Attribute.of('io.github.mcgradleconventions.loader', String)
-['apiElements', 'runtimeElements', 'sourcesElements', 'javadocElements', 'includeInternal', 'modCompileClasspath'].each { variant ->
+['apiElements', 'runtimeElements', 'includeInternal', 'modCompileClasspath'].each { variant ->
     configurations.named("$variant") {
         attributes {
             attribute(loaderAttribute, 'fabric')
@@ -80,7 +80,7 @@ modrinth {
 
     dependencies {
         required.project "fabric-api"
-        optional.project "forge-config-api-fabric"
+        optional.project "forge-config-api-port"
     }
 }
 
@@ -100,7 +100,7 @@ curseforge {
 
             relations {
                 it.requiredDependency "fabric-api"
-                it.requiredDependency "forge-config-api-fabric"
+                it.requiredDependency "forge-config-api-port"
             }
         }
     }
