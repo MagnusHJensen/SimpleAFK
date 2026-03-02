@@ -91,7 +91,4 @@ curseforge {
             it.displayName = "${mod_name} (NeoForge) - v${version} - ${minecraft_version}"
         }
     }
-    options {
-        debug = true
-    }
 }
