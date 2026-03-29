@@ -11,6 +11,7 @@ package dk.magnusjensen.simpleafk;
 
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
@@ -22,8 +23,10 @@ import java.util.UUID;
 
 public class AFKData extends SavedData {
 
+    private static final Identifier ID_KEY = Identifier.fromNamespaceAndPath("simpleafk", "afk_data");
+
     public static final SavedDataType<AFKData> ID = new SavedDataType<>(
-        "simpleafk",
+        ID_KEY,
         AFKData::new,
         RecordCodecBuilder.create(instance -> instance.group(
             UUIDUtil.CODEC_SET.fieldOf("exemptPlayers").forGetter(data -> data.exemptPlayers)

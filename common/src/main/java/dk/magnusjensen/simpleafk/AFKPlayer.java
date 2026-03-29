@@ -59,13 +59,12 @@ public class AFKPlayer {
             // Check if the player is not marked as AFK, and if the player has not moved for the amount of seconds specified in the config.
             boolean isMoveAfkFactor = timestampInSeconds - timestampSinceLastMove >= ServerConfig.CONFIG.secondsBeforeAfk.get();
             boolean isLookAfkFactor = timestampInSeconds - timestampSinceLastLook >=  ServerConfig.CONFIG.secondsBeforeAfk.get();
-            if (!isAfk && (isMoveAfkFactor || isLookAfkFactor)) {
+            if (!isAfk && (isMoveAfkFactor && isLookAfkFactor)) {
                 setAfkStatus();
             } else if (
                 ServerConfig.CONFIG.secondsBeforeKick.get() > 0 &&
                     isAfk &&
-                    (timestampInSeconds - timestampSinceAfk >=  ServerConfig.CONFIG.secondsBeforeKick.get() ||
-                        timestampInSeconds - timestampSinceLastMove >=  ServerConfig.CONFIG.secondsBeforeKick.get())
+                    (timestampInSeconds - timestampSinceAfk >=  ServerConfig.CONFIG.secondsBeforeKick.get())
             ) {
                 player.connection.disconnect(Component.literal( ServerConfig.CONFIG.afkKickMessage.get()));
             }
@@ -82,7 +81,7 @@ public class AFKPlayer {
     }
 
     private void setAfkStatus() {
-        this.isAfk = true;
+            this.isAfk = true;
         this.timestampSinceAfk = System.currentTimeMillis() / 1000;
         move(player);
         Services.PLATFORM.refreshTabListName(this.player);
@@ -98,8 +97,6 @@ public class AFKPlayer {
         if (!isAfk) return;
 
         this.isAfk = false;
-        this.timestampSinceAfk = System.currentTimeMillis() / 1000;
-        this.timestampSinceLastMove = System.currentTimeMillis() / 1000;
         move(player);
         Services.PLATFORM.refreshTabListName(this.player);
 

@@ -1,6 +1,6 @@
 plugins {
     id 'multiloader-loader'
-    id 'fabric-loom'
+    id 'net.fabricmc.fabric-loom'
 
     id "com.modrinth.minotaur" version "2.+"
     id "io.github.CDAGaming.cursegradle" version "1.6.1"
@@ -8,23 +8,16 @@ plugins {
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
-    mappings loom.layered {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${parchment_minecraft}:${parchment_version}@zip")
-    }
-    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    implementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
-    modImplementation "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:21.11.1"
+    implementation "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:26.1.0.2"
 }
 
 loom {
     def aw = project(':common').file("src/main/resources/${mod_id}.accesswidener")
     if (aw.exists()) {
         accessWidenerPath.set(aw)
-    }
-    mixin {
-        defaultRefmapName.set("${mod_id}.refmap.json")
     }
     runs {
         client {
@@ -60,21 +53,14 @@ sourceSets.configureEach {
         }
     }
 }
-loom.remapConfigurations.configureEach {
-    configurations.named(it.name) {
-        attributes {
-            attribute(loaderAttribute, 'fabric')
-        }
-    }
-}
 
 modrinth {
     token = System.getenv("MODRINTH_TOKEN")
     projectId = "bI9lnAFH" // Required, must be a string, ID of Modrinth project
     versionName = "${mod_name} (Fabric) - v${version} - ${minecraft_version}"
     versionType = "release"
-    uploadFile = remapJar
-    gameVersions = ["1.21.11"]
+    uploadFile = jar
+    gameVersions = ["26.1"]
     loaders = ["fabric"]
     changelog = rootProject.file("CHANGELOG.md").text
 
@@ -94,8 +80,8 @@ curseforge {
 
         changelog = rootProject.file("CHANGELOG.md").text
         changelogType = "markdown"
-        gameVersionStrings = ["1.21.11", "Fabric"]
-        mainArtifact(remapJar) {
+        gameVersionStrings = ["26.1", "Fabric"]
+        mainArtifact(jar) {
             it.displayName = "${mod_name} (Fabric) - v${version} - ${minecraft_version}"
 
             relations {

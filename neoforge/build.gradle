@@ -13,10 +13,6 @@ neoForge {
     if (at.exists()) {
         accessTransformers.from(at.absolutePath)
     }
-    parchment {
-        minecraftVersion = parchment_minecraft
-        mappingsVersion = parchment_version
-    }
     runs {
         configureEach {
             systemProperty('neoforge.enabledGameTestNamespaces', mod_id)
@@ -24,9 +20,11 @@ neoForge {
         }
         client {
             client()
+            gameDirectory = this.mkdir(this.file("runs/client"))
         }
         data {
             clientData()
+            gameDirectory = this.mkdir(this.file("runs/data"))
 
             // DataGen can be run by - "./gradlew :neoforge:runData" in Terminal.
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
@@ -34,7 +32,9 @@ neoForge {
 
         }
         server {
-            server()
+						server()
+            this.file("runs/server").createParentDirectories()
+            gameDirectory = this.mkdir(this.file("runs/server"))
         }
     }
     mods {
@@ -71,7 +71,7 @@ modrinth {
     versionName = "${mod_name} (NeoForge) - v${version} - ${minecraft_version}"
     versionType = "release"
     uploadFile = jar
-    gameVersions = ["1.21.11"]
+    gameVersions = ["26.1"]
     loaders = ["neoforge"]
     changelog = rootProject.file("CHANGELOG.md").text
 }
@@ -86,7 +86,7 @@ curseforge {
 
         changelog = rootProject.file("CHANGELOG.md").text
         changelogType = "markdown"
-        gameVersionStrings = ["1.21.11", "NeoForge"]
+        gameVersionStrings = ["26.1", "NeoForge"]
         mainArtifact(jar) {
             it.displayName = "${mod_name} (NeoForge) - v${version} - ${minecraft_version}"
         }

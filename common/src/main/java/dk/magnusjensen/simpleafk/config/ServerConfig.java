@@ -57,7 +57,7 @@ public class ServerConfig
             .define("playerNameFormat", "§7[AFK] §r$player", (obj) -> obj instanceof String && obj.toString().contains("$player"));
         afkKickMessage = builder
             .comment("The message that will be sent to the player after being kicked for being AFK too long.", "Can be edited with the regular minecraft chat codes which can be found here https://minecraft.fandom.com/wiki/Formatting_codes#Color_codes")
-            .define("afkKickMessage", "§1You have been kicked for being AFK too long.", (obj) -> obj instanceof String);
+            .define("afkKickMessage", "You have been kicked for being AFK too long.", (obj) -> obj instanceof String);
 
         includeExemptPlayersInSleepVote = builder
             .comment("Whether exempt players should be included in the sleep vote.")
