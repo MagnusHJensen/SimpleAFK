@@ -1,2 +1,2 @@
-# 1.5.1 - 1.21.1
-- Fixed a tick crashing issue
+# 1.5.2 - 1.21.1
+- Fixed an AFK calculation issue, not accounting correctly for both head and move AFK times.

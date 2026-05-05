@@ -74,7 +74,7 @@ public class AFKPlayer {
         boolean isMoveAfkFactor = timestampInSeconds - timestampSinceLastMove >= ServerConfig.secondsBeforeAfk;
         boolean isLookAfkFactor = timestampInSeconds - timestampSinceLastLook >= ServerConfig.secondsBeforeAfk;
 
-        boolean afkFactors = isMoveAfkFactor || isLookAfkFactor;
+        boolean afkFactors = isMoveAfkFactor && isLookAfkFactor;
 
         return !isAfk && afkFactors;
     }
@@ -86,12 +86,9 @@ public class AFKPlayer {
      * @return True if the player should be kicked, false otherwise
      */
     public boolean checkIfShouldBeKicked(long timestampInSeconds) {
-        boolean isMoveKickFactor = timestampInSeconds - timestampSinceLastMove >= ServerConfig.secondsBeforeKick;
         boolean isAfkKickFactor = timestampInSeconds - timestampSinceAfk >= ServerConfig.secondsBeforeKick;
 
-        boolean kickFactors = isMoveKickFactor || isAfkKickFactor;
-
-        return ServerConfig.secondsBeforeKick > 0 && isAfk && kickFactors;
+        return ServerConfig.secondsBeforeKick > 0 && isAfk && isAfkKickFactor;
     }
 
     public void toggleAfkStatus() {
@@ -167,17 +164,6 @@ public class AFKPlayer {
 
     public ServerPlayer getPlayer() {
         return player;
-    }
-
-    /**
-     * This does not mean that the player is AFK, to ensure the player is AFK check the isAfk.
-     */
-    public long getSecondsSinceAfk() {
-        return (System.currentTimeMillis() / 1000) - timestampSinceAfk;
-    }
-
-    public long getSecondsSinceLastMove() {
-        return (System.currentTimeMillis() / 1000) - timestampSinceLastMove;
     }
 
     public boolean isAfk() {
