@@ -53,24 +53,42 @@ public class AFKPlayer {
         move(player);
         lookAround(player);
 
-
         if (player.level().getGameTime() % 20 == 0) {
             long timestampInSeconds = System.currentTimeMillis() / 1000;
-            // Check if the player is not marked as AFK, and if the player has not moved for the amount of seconds specified in the config.
-            boolean isMoveAfkFactor = timestampInSeconds - timestampSinceLastMove >= ServerConfig.secondsBeforeAfk;
-            boolean isLookAfkFactor = timestampInSeconds - timestampSinceLastLook >= ServerConfig.secondsBeforeAfk;
-            if (!isAfk && (isMoveAfkFactor || isLookAfkFactor)) {
+            if (checkIfShouldBeAfk(timestampInSeconds)) {
                 setAfkStatus();
-            } else if (
-                ServerConfig.secondsBeforeKick > 0 &&
-                    isAfk &&
-                    (timestampInSeconds - timestampSinceAfk >= ServerConfig.secondsBeforeKick ||
-                        timestampInSeconds - timestampSinceLastMove >= ServerConfig.secondsBeforeKick)
-            ) {
-                player.connection.disconnect(Component.literal(ServerConfig.afkKickMessage));
+            } else if (checkIfShouldBeKicked(timestampInSeconds)) {
+                kickPlayer();
             }
         }
+    }
 
+    /**
+     * Check if the player should be AFK, based on movement and current AFK status.
+     * 
+     * @param timestampInSeconds Current timestamp in seconds
+     * @return True if the player should be AFK, false otherwise
+     */
+    public boolean checkIfShouldBeAfk(long timestampInSeconds) {
+        // Check if the player is not marked as AFK, and if the player has not moved for the amount of seconds specified in the config.
+        boolean isMoveAfkFactor = timestampInSeconds - timestampSinceLastMove >= ServerConfig.secondsBeforeAfk;
+        boolean isLookAfkFactor = timestampInSeconds - timestampSinceLastLook >= ServerConfig.secondsBeforeAfk;
+
+        boolean afkFactors = isMoveAfkFactor && isLookAfkFactor;
+
+        return !isAfk && afkFactors;
+    }
+
+    /**
+     * Check if the player should be kicked, based on movement and current AFK status.
+     * 
+     * @param timestampInSeconds Current timestamp in seconds
+     * @return True if the player should be kicked, false otherwise
+     */
+    public boolean checkIfShouldBeKicked(long timestampInSeconds) {
+        boolean isAfkKickFactor = timestampInSeconds - timestampSinceAfk >= ServerConfig.secondsBeforeKick;
+
+        return ServerConfig.secondsBeforeKick > 0 && isAfk && isAfkKickFactor;
     }
 
     public void toggleAfkStatus() {
@@ -84,6 +102,7 @@ public class AFKPlayer {
     private void setAfkStatus() {
         this.isAfk = true;
         this.timestampSinceAfk = System.currentTimeMillis() / 1000;
+        lookAround(player);
         move(player);
         Services.PLATFORM.refreshTabListName(this.player);
 
@@ -99,7 +118,8 @@ public class AFKPlayer {
 
         this.isAfk = false;
         this.timestampSinceAfk = System.currentTimeMillis() / 1000;
-        this.timestampSinceLastMove = System.currentTimeMillis() / 1000;
+        resetMovement();
+        lookAround(player);
         move(player);
         Services.PLATFORM.refreshTabListName(this.player);
 
@@ -108,6 +128,16 @@ public class AFKPlayer {
         } else {
             player.sendSystemMessage(Utilities.formatMessageWithPlayerName(ServerConfig.isNoLongerAfkMessage, player.getDisplayName().getString()), false);
         }
+    }
+
+    public void resetMovement() {
+        long currentTimestamp = System.currentTimeMillis() / 1000;
+        this.timestampSinceLastMove = currentTimestamp;
+        this.timestampSinceLastLook = currentTimestamp;
+    }
+
+    public void kickPlayer() {
+        player.connection.disconnect(Component.literal(ServerConfig.afkKickMessage));
     }
 
     private boolean hasPlayerMoved(ServerPlayer player) {
@@ -134,17 +164,6 @@ public class AFKPlayer {
 
     public ServerPlayer getPlayer() {
         return player;
-    }
-
-    /**
-     * This does not mean that the player is AFK, to ensure the player is AFK check the isAfk.
-     */
-    public long getSecondsSinceAfk() {
-        return (System.currentTimeMillis() / 1000) - timestampSinceAfk;
-    }
-
-    public long getSecondsSinceLastMove() {
-        return (System.currentTimeMillis() / 1000) - timestampSinceLastMove;
     }
 
     public boolean isAfk() {
