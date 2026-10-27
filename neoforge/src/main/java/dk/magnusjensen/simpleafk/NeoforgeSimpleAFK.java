@@ -28,7 +28,7 @@ public class NeoforgeSimpleAFK {
         CommonClass.init();
         modEventBus.addListener(this::onConfigUpdates);
 
-        modContainer.registerConfig(ModConfig.Type.SERVER, ServerConfig.CONFIG_SPEC);
+        modContainer.registerConfig(ModConfig.Type.SYNCED, ServerConfig.CONFIG_SPEC);
     }
 
     private void onConfigUpdates(final ModConfigEvent event) {

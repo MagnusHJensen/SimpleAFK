@@ -60,7 +60,7 @@ modrinth {
     versionName = "${mod_name} (Fabric) - v${version} - ${minecraft_version}"
     versionType = "release"
     uploadFile = jar
-    gameVersions = ["26.2"]
+    gameVersions = ["26.3"]
     loaders = ["fabric"]
     changelog = rootProject.file("CHANGELOG.md").text
 
@@ -80,7 +80,7 @@ curseforge {
 
         changelog = rootProject.file("CHANGELOG.md").text
         changelogType = "markdown"
-        gameVersionStrings = ["26.2", "Fabric", "Server"]
+        gameVersionStrings = ["26.3", "Fabric", "Server"]
         mainArtifact(jar) {
             it.displayName = "${mod_name} (Fabric) - v${version} - ${minecraft_version}"
 
